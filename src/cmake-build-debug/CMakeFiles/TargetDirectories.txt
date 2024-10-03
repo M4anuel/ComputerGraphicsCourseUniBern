@@ -1,0 +1,5 @@
+C:/Users/manue/Downloads/assignment_00/assignment_00/src/cmake-build-debug/CMakeFiles/common.dir
+C:/Users/manue/Downloads/assignment_00/assignment_00/src/cmake-build-debug/CMakeFiles/raytrace.dir
+C:/Users/manue/Downloads/assignment_00/assignment_00/src/cmake-build-debug/CMakeFiles/debug_aabb.dir
+C:/Users/manue/Downloads/assignment_00/assignment_00/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/manue/Downloads/assignment_00/assignment_00/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir

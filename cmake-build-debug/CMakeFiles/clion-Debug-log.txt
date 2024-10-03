@@ -1,0 +1,13 @@
+"C:\Program Files\JetBrains\CLion 2024.2.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -G Ninja -S "C:\Users\manue\Downloads\assignment_00 (2)\assignment_00\assignment_00" -B "C:\Users\manue\Downloads\assignment_00 (2)\assignment_00\assignment_00\cmake-build-debug"
+-- The CXX compiler identification is GNU 13.1.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found OpenMP_CXX: -fopenmp (found version "4.5")
+-- Found OpenMP: TRUE (found version "4.5")
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Configuring done (1.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Users/manue/Downloads/assignment_00 (2)/assignment_00/assignment_00/cmake-build-debug

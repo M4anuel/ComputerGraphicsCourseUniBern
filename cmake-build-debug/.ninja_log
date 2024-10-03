@@ -1,0 +1,22 @@
+# ninja log v6
+19	702	7489170066344560	src/CMakeFiles/common.dir/Cylinder.cpp.obj	7308ff0042b509e3
+30	3003	7485465800040799	src/CMakeFiles/debug_aabb.dir/debug_aabb.cpp.obj	17a144a58386fd5a
+32	2456	7489170066464824	src/CMakeFiles/common.dir/Scene.cpp.obj	92b213503079c542
+42	707	7489170066570086	src/CMakeFiles/common.dir/vec3.cpp.obj	66e87f8682486e62
+27	702	7489170066429751	src/CMakeFiles/common.dir/Plane.cpp.obj	742453cdbecc3cf8
+23	864	7489170066379763	src/CMakeFiles/common.dir/Mesh.cpp.obj	6c6ff0ea7a6138d6
+37	722	7489170066514918	src/CMakeFiles/common.dir/Sphere.cpp.obj	5fd9bf931ac9ee66
+2456	2569	7489170090711179	src/libcommon.a	9aaad3ccc6a5727
+47	2123	7489170066620157	src/CMakeFiles/raytrace.dir/raytrace.cpp.obj	da6734b2ac3844f4
+2569	2709	7489170091838124	raytrace.exe	f879562a57711a6a
+16	314	7496915758510671	build.ninja	6b06300cfcf13603
+29	512	7496915758510671	build.ninja	6b06300cfcf13603
+32	746	7496915759605768	src/CMakeFiles/common.dir/vec3.cpp.obj	aa2c7a5a15f55e4d
+21	790	7496915759501182	src/CMakeFiles/common.dir/Plane.cpp.obj	40536a891ec9d498
+15	792	7496915759436074	src/CMakeFiles/common.dir/Cylinder.cpp.obj	fe2bf188a4af7b70
+28	803	7496915759561171	src/CMakeFiles/common.dir/Sphere.cpp.obj	7afa847629e68b71
+18	919	7496915759471169	src/CMakeFiles/common.dir/Mesh.cpp.obj	22d2514fcb61280e
+40	2117	7496915759690895	src/CMakeFiles/raytrace.dir/raytrace.cpp.obj	c23d1ea422504796
+24	2473	7496915759531163	src/CMakeFiles/common.dir/Scene.cpp.obj	cc144d6bb43e54a4
+2474	2643	7496915784030890	src/libcommon.a	9aaad3ccc6a5727
+2643	2876	7496915785726724	raytrace.exe	f879562a57711a6a

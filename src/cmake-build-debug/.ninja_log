@@ -1,0 +1,9 @@
+# ninja log v6
+22	845	7485465275114937	CMakeFiles/common.dir/vec3.obj	b57dfe772ae6a6a5
+11	867	7485465275004360	CMakeFiles/common.dir/Plane.obj	b57654b6e78e8b64
+3	881	7485465274926407	CMakeFiles/common.dir/Cylinder.obj	e12e7ec0dfe7188f
+18	889	7485465275083019	CMakeFiles/common.dir/Sphere.obj	dd06270ccfd757a5
+8	1080	7485465274971506	CMakeFiles/common.dir/Mesh.obj	1037d1a024fd33e0
+26	2886	7485465275156961	CMakeFiles/debug_aabb.dir/debug_aabb.obj	468a8bafeb72ecd9
+15	3245	7485465275047517	CMakeFiles/common.dir/Scene.obj	656817bd1f22ebdb
+3245	3369	7485465307345755	libcommon.a	205aecc7b1796a8d
