@@ -20,18 +20,67 @@
 
 bool
 Cylinder::
-intersect(const Ray&  _ray,
-          vec3&       _intersection_point,
-          vec3&       _intersection_normal,
-          double&     _intersection_t) const
+intersect(const Ray& _ray,
+          vec3& _intersection_point,
+          vec3& _intersection_normal,
+          double& _intersection_t) const
 {
-    /** \todo
-     * - compute the first valid intersection `_ray` with the cylinder
-     *   (valid means in front of the viewer: t > 0)
-     * - store intersection point in `_intersection_point`
-     * - store ray parameter in `_intersection_t`
-     * - store normal at _intersection_point in `_intersection_normal`.
-     * - return whether there is an intersection with t > 0
-    */
-    return false;
+    vec3 oc = _ray.origin - center;
+    vec3 d = _ray.direction;
+    vec3 a = axis;
+
+    double A = dot(d - dot(d, a) * a, d - dot(d, a) * a);
+    double B = 2.0 * dot(d - dot(d, a) * a, oc - dot(oc, a) * a);
+    double C = dot(oc - dot(oc, a) * a, oc - dot(oc, a) * a) - radius * radius;
+
+
+    std::array<double, 2> t;
+    size_t nsol = solveQuadratic(A, B, C, t);
+
+    _intersection_t = NO_INTERSECTION;
+
+/**
+    // Find the closest valid solution (in front of the viewer)
+    for (size_t i = 0; i < nsol; ++i) {
+        if (t[i] > 0) _intersection_t = std::min(_intersection_t, t[i]);
+    }
+
+    if (_intersection_t == NO_INTERSECTION) return false;
+
+    _intersection_point = _ray.origin + _intersection_t * _ray.direction;
+
+    // Check if the intersection point is within the height of the cylinder
+    vec3 v = _intersection_point - center;
+    double height_projection = dot(v, axis);
+    if (height_projection < 0 || height_projection > height) {
+        return false;
+    }
+    // Calculate the normal
+    vec3 axisPoint = center + (dot(v, axis) / dot(axis, axis)) * axis;
+    _intersection_normal = normalize(_intersection_point - axisPoint);
+
+*/
+
+    // Find the closest valid solution (in front of the viewer)
+    for (size_t i = 0; i < nsol; ++i) {
+        if (t[i] > 0) {
+            vec3 intersection_point_temp = _ray.origin + t[i] * _ray.direction;
+            vec3 v = intersection_point_temp - center;
+            double height_projection = dot(v, a);
+            if (height_projection >= 0 && height_projection <= height) {
+                _intersection_t = std::min(_intersection_t, t[i]);
+                _intersection_point = intersection_point_temp;
+            }
+        }
+    }
+
+    if (_intersection_t == NO_INTERSECTION) return false;
+
+    // Calculate the normal
+    vec3 v = _intersection_point - center;
+    vec3 axisPoint = center + (dot(v, a) / dot(a, a)) * a;
+    _intersection_normal = normalize(_intersection_point - axisPoint);
+
+
+    return true;
 }
