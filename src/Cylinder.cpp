@@ -39,28 +39,6 @@ intersect(const Ray& _ray,
 
     _intersection_t = NO_INTERSECTION;
 
-/**
-    // Find the closest valid solution (in front of the viewer)
-    for (size_t i = 0; i < nsol; ++i) {
-        if (t[i] > 0) _intersection_t = std::min(_intersection_t, t[i]);
-    }
-
-    if (_intersection_t == NO_INTERSECTION) return false;
-
-    _intersection_point = _ray.origin + _intersection_t * _ray.direction;
-
-    // Check if the intersection point is within the height of the cylinder
-    vec3 v = _intersection_point - center;
-    double height_projection = dot(v, axis);
-    if (height_projection < 0 || height_projection > height) {
-        return false;
-    }
-    // Calculate the normal
-    vec3 axisPoint = center + (dot(v, axis) / dot(axis, axis)) * axis;
-    _intersection_normal = normalize(_intersection_point - axisPoint);
-
-*/
-
     // Find the closest valid solution (in front of the viewer)
     for (size_t i = 0; i < nsol; ++i) {
         if (t[i] > 0) {
@@ -80,7 +58,11 @@ intersect(const Ray& _ray,
     vec3 v = _intersection_point - center;
     vec3 axisPoint = center + (dot(v, a) / dot(a, a)) * a;
     _intersection_normal = normalize(_intersection_point - axisPoint);
-
+    // Flip the normal if necessary
+    if (dot(_ray.direction, _intersection_normal) > 0)
+    {
+        _intersection_normal = -_intersection_normal;
+    }
 
     return true;
 }

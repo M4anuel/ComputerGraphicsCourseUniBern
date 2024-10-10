@@ -21,7 +21,7 @@
 #include <functional>
 #include <stdexcept>
 
-#ifdef _OPENMP
+#if HAVE_OPENMP
 #  include <omp.h>
 #endif
 
@@ -51,20 +51,17 @@ Image Scene::render()
     };
 
     // If possible, raytrace image columns in parallel.
-    //
-    // Mac users beware:
-    // XCode's compiler (based on clang) does not support OpenMP
-    // - you will have to install a vanialla clang (or gcc) if you want to use
-    // OpenMP parallelization, e.g. via MacPorts.
 
-#if 0
+#if HAVE_OPENMP
     std::cout << "Rendering with up to " << omp_get_max_threads() << " threads." << std::endl;
 #  pragma omp parallel for
 #else
-    std::cout << "Rendering singlethreaded." << std::endl;
+    std::cout << "Rendering singlethreaded (compiled without OpenMP)." << std::endl;
 #endif
-    for (int x=0; x<int(camera.width); ++x)
+
+    for (int x=0; x<int(camera.width); ++x) {
         raytraceColumn(x);
+    }
 
     // Note: compiler will elide copy.
     return img;
@@ -75,7 +72,7 @@ Image Scene::render()
 vec3 Scene::trace(const Ray& _ray, int _depth)
 {
     // stop if recursion depth (=number of reflection) is too large
-    if (_depth > max_depth) return vec3(0,0,0);
+    if (_depth > max_depth) return vec3(0, 0, 0);
 
     // Find first intersection with an object. If an intersection is found,
     // it is stored in object, point, normal, and t.
@@ -91,10 +88,19 @@ vec3 Scene::trace(const Ray& _ray, int _depth)
     // compute local Phong lighting (ambient+diffuse+specular)
     vec3 color = lighting(point, normal, -_ray.direction, object->material);
 
-
+    // Compute reflections by recursive ray tracing
+    if (object->material.mirror && _depth < max_depth)
+    {
+        vec3 reflectionDir = reflect(_ray.direction, normal);
+        Ray reflectionRay(point + normal * 0.001, reflectionDir); // small offset to avoid self-intersection
+        vec3 reflectionColor = trace(reflectionRay, _depth + 1);
+        // Linear interpolation
+        color = (1 - object->material.mirror) * color + object->material.mirror * reflectionColor;
+    }
 
     return color;
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -123,9 +129,28 @@ bool Scene::intersect(const Ray& _ray, Object_ptr& _object, vec3& _point, vec3& 
 
 vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view, const Material& _material)
 {
+    vec3 ambient_contribution  = _material.ambient*ambience;
+    vec3 diff_spec_shadows = vec3(0, 0, 0);
 
-    // visualize the normal as a RGB color for now.
-    vec3 color = (_normal + vec3(1)) / 2.0;
+    for (const Light& lightsource : lights)
+    {
+        vec3 l = normalize(lightsource.position - _point);
+        Ray shadowRay(_point + _normal * 0.001, l); // small offset to avoid self-intersection
+        Object_ptr shadowObject;
+        vec3 shadowIntersectionPoint, shadowIntersectionNormal;
+        double shadowIntersectionT;
+
+        bool inShadow = intersect(shadowRay, shadowObject, shadowIntersectionPoint, shadowIntersectionNormal, shadowIntersectionT);
+
+        if (!inShadow)
+        {
+            vec3 diffuse_reflection_part = _material.diffuse * std::max(dot(_normal, l), 0.0);
+            vec3 specular_reflection_part = _material.specular * pow(std::max(dot(mirror(l, _normal), _view), 0.0), _material.shininess);
+            diff_spec_shadows += lightsource.color * (diffuse_reflection_part + specular_reflection_part);
+        }
+    }
+
+    vec3 color = ambient_contribution+diff_spec_shadows;
 
     return color;
 }
