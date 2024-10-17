@@ -11,10 +11,10 @@ SET(TARGETS raytrace debug_aabb)
 
 foreach(TARGET common ${TARGETS})
     set_target_properties(${TARGET}
-        PROPERTIES
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED YES
-        CXX_EXTENSIONS NO
+            PROPERTIES
+            CXX_STANDARD 17
+            CXX_STANDARD_REQUIRED YES
+            CXX_EXTENSIONS NO
     )
     if(WIN32)
         # windows standard library needs some special treatment
@@ -23,6 +23,9 @@ foreach(TARGET common ${TARGETS})
 
     if(OpenMP_CXX_FOUND)
         target_link_libraries(${TARGET} PUBLIC OpenMP::OpenMP_CXX)
+    #     target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=1") #this line added
+    # else()
+    #     target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=0") #this line added
     endif()
 endforeach()
 

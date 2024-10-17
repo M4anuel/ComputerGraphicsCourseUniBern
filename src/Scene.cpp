@@ -144,9 +144,13 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
 
         if (!inShadow)
         {
-            vec3 diffuse_reflection_part = _material.diffuse * std::max(dot(_normal, l), 0.0);
-            vec3 specular_reflection_part = _material.specular * pow(std::max(dot(mirror(l, _normal), _view), 0.0), _material.shininess);
-            diff_spec_shadows += lightsource.color * (diffuse_reflection_part + specular_reflection_part);
+            double diffuse_part = std::max(dot(_normal, l), 0.0);
+            vec3 diffuse_reflection_part = _material.diffuse * diffuse_part;
+            if (diffuse_part)
+            {
+                vec3 specular_reflection_part = _material.specular * pow(std::max(dot(mirror(l, _normal), _view), 0.0), _material.shininess);
+                diff_spec_shadows += lightsource.color * (diffuse_reflection_part + specular_reflection_part);
+            }
         }
     }
 

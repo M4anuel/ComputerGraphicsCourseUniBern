@@ -151,6 +151,30 @@ void Mesh::compute_normals()
         v.normal = vec3(0,0,0);
     }
 
+
+
+    // weights are theta v
+    /** \todo
+     *
+     * In some scenes (e.g the office scene) some objects should be flat
+     * shaded (e.g. the desk) while other objects should be Phong shaded to appear
+     * realistic (e.g. chairs). You have to implement the following:
+     * - Compute vertex normals by averaging the normals of their incident triangles.
+     * - Store the vertex normals in the Vertex::normal member variable.
+     * - Weigh the normals by their triangles' angles.
+    */
+    for (Triangle& t: triangles_)
+    {
+        double w0, w1, w2;
+        angleWeights(vertices_[t.i0].position, vertices_[t.i1].position, vertices_[t.i2].position, w0, w1, w2);
+        vertices_[t.i0].position += t.normal*w0;
+        vertices_[t.i1].position += t.normal*w1;
+        vertices_[t.i2].position += t.normal*w2;
+    }
+    for (Vertex& v: vertices_)
+    {
+        v.normal = normalize(v.normal);
+    }
 }
 
 
@@ -176,6 +200,15 @@ void Mesh::compute_bounding_box()
 bool Mesh::intersect_bounding_box(const Ray& _ray) const
 {
 
+    /** \todo
+    * Intersect the ray `_ray` with the axis-aligned bounding box of the mesh.
+    * Note that the minimum and maximum point of the bounding box are stored
+    * in the member variables `bb_min_` and `bb_max_`. Return whether the ray
+    * intersects the bounding box.
+    * This function is ued in `Mesh::intersect()` to avoid the intersection test
+    * with all triangles of every mesh in the scene. The bounding boxes are computed
+    * in `Mesh::compute_bounding_box()`.
+    */
 
     return true;
 }
@@ -236,6 +269,19 @@ intersect_triangle(const Triangle&  _triangle,
     const vec3& p1 = vertices_[_triangle.i1].position;
     const vec3& p2 = vertices_[_triangle.i2].position;
 
+    /** \todo
+    * - intersect _ray with _triangle
+    * - store intersection point in `_intersection_point`
+    * - store ray parameter in `_intersection_t`
+    * - store normal at intersection point in `_intersection_normal`.
+    * - Depending on the member variable `draw_mode_`, use either the triangle
+    *  normal (`Triangle::normal`) or interpolate the vertex normals (`Vertex::normal`).
+    * - return `true` if there is an intersection with t > 0 (in front of the viewer)
+    *
+    * Hint: Rearrange `ray.origin + t*ray.dir = a*p0 + b*p1 + (1-a-b)*p2` to obtain a solvable
+    * system for a, b and t.
+    * Refer to [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) to easily solve it.
+     */
 
     return false;
 }
