@@ -150,26 +150,13 @@ void Mesh::compute_normals()
     {
         v.normal = vec3(0,0,0);
     }
-
-
-
-    // weights are theta v
-    /** \todo
-     *
-     * In some scenes (e.g the office scene) some objects should be flat
-     * shaded (e.g. the desk) while other objects should be Phong shaded to appear
-     * realistic (e.g. chairs). You have to implement the following:
-     * - Compute vertex normals by averaging the normals of their incident triangles.
-     * - Store the vertex normals in the Vertex::normal member variable.
-     * - Weigh the normals by their triangles' angles.
-    */
     for (Triangle& t: triangles_)
     {
         double w0, w1, w2;
         angleWeights(vertices_[t.i0].position, vertices_[t.i1].position, vertices_[t.i2].position, w0, w1, w2);
-        vertices_[t.i0].position += t.normal*w0;
-        vertices_[t.i1].position += t.normal*w1;
-        vertices_[t.i2].position += t.normal*w2;
+        vertices_[t.i0].normal += t.normal*w0;
+        vertices_[t.i1].normal += t.normal*w1;
+        vertices_[t.i2].normal += t.normal*w2;
     }
     for (Vertex& v: vertices_)
     {
@@ -209,8 +196,43 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
     * with all triangles of every mesh in the scene. The bounding boxes are computed
     * in `Mesh::compute_bounding_box()`.
     */
+    // Initialize tmin and tmax to the interval of the ray
+    double tmin = (bb_min_[0] - _ray.origin[0]) / _ray.direction[0];
+    double tmax = (bb_max_[0] - _ray.origin[0]) / _ray.direction[0];
 
-    return true;
+    if (tmin > tmax) std::swap(tmin, tmax);
+
+    double tymin = (bb_min_[1] - _ray.origin[1]) / _ray.direction[1];
+    double tymax = (bb_max_[1] - _ray.origin[1]) / _ray.direction[1];
+
+    if (tymin > tymax) std::swap(tymin, tymax);
+
+    // Update tmin and tmax to ensure they are the overlapping intervals
+    if ((tmin > tymax) || (tymin > tmax))
+        return false;
+
+    if (tymin > tmin)
+        tmin = tymin;
+
+    if (tymax < tmax)
+        tmax = tymax;
+
+    double tzmin = (bb_min_[2] - _ray.origin[2]) / _ray.direction[2];
+    double tzmax = (bb_max_[2] - _ray.origin[2]) / _ray.direction[2];
+
+    if (tzmin > tzmax) std::swap(tzmin, tzmax);
+
+    // Update tmin and tmax to ensure they are the overlapping intervals
+    if ((tmin > tzmax) || (tzmin > tmax))
+        return false;
+
+    if (tzmin > tmin)
+        tmin = tzmin;
+
+    if (tzmax < tmax)
+        tmax = tzmax;
+
+    return tmax > tmin && tmax > 0;
 }
 
 
@@ -257,18 +279,12 @@ bool Mesh::intersect(const Ray& _ray,
 //-----------------------------------------------------------------------------
 
 
-bool
-Mesh::
-intersect_triangle(const Triangle&  _triangle,
-                   const Ray&       _ray,
-                   vec3&            _intersection_point,
-                   vec3&            _intersection_normal,
-                   double&          _intersection_t) const
+bool Mesh::intersect_triangle(const Triangle& _triangle,
+                              const Ray& _ray,
+                              vec3& _intersection_point,
+                              vec3& _intersection_normal,
+                              double& _intersection_t) const
 {
-    const vec3& p0 = vertices_[_triangle.i0].position;
-    const vec3& p1 = vertices_[_triangle.i1].position;
-    const vec3& p2 = vertices_[_triangle.i2].position;
-
     /** \todo
     * - intersect _ray with _triangle
     * - store intersection point in `_intersection_point`
@@ -282,9 +298,59 @@ intersect_triangle(const Triangle&  _triangle,
     * system for a, b and t.
     * Refer to [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) to easily solve it.
      */
+    const vec3& p0 = vertices_[_triangle.i0].position;
+    const vec3& p1 = vertices_[_triangle.i1].position;
+    const vec3& p2 = vertices_[_triangle.i2].position;
+
+    vec3 edge1 = p1 - p0;
+    vec3 edge2 = p2 - p0;
+    vec3 h = cross(_ray.direction, edge2);
+    double a = dot(edge1, h);
+    // a = det of a matrix involving the triangle's edges and the ray, f acts as a normalization factor
+
+    if (a > -1e-8 && a < 1e-8) // if the vector is parallel we can skip it (dotprod close to 0)
+        return false;
+
+    double f = 1.0 / a;
+    vec3 s = _ray.origin - p0;
+    double beta = f * dot(s, h);
+
+    if (beta < 0.0 || beta > 1.0) // The intersection lies outside of the triangle.
+        return false;
+
+    vec3 q = cross(s, edge1);
+    double gamme = f * dot(_ray.direction, q);
+
+    if (gamme < 0.0 || beta + gamme > 1.0) // The intersection lies outside of the triangle.
+        return false;
+
+    // Compute t to find the intersection point.
+    double t = f * dot(q, edge2);
+    if (t > 1e-8) // Intersection is in front of the viewer.
+    {
+        _intersection_t = t;
+        _intersection_point = _ray.origin + _ray.direction * t;
+
+        if (draw_mode_ == Draw_mode::FLAT)
+        {
+            // Use triangle normal
+            _intersection_normal = _triangle.normal;
+        }
+        else // DrawMode::PHONG
+        {
+            // Interpolate vertex normals
+            const vec3& n0 = vertices_[_triangle.i0].normal;
+            const vec3& n1 = vertices_[_triangle.i1].normal;
+            const vec3& n2 = vertices_[_triangle.i2].normal;
+            _intersection_normal = normalize((1 - beta - gamme) * n0 + beta * n1 + gamme * n2);
+        }
+
+        return true;
+    }
 
     return false;
 }
+
 
 
 //=============================================================================

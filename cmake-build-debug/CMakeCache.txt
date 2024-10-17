@@ -15,10 +15,10 @@
 ########################
 
 //Path to a program.
-CMAKE_ADDR2LINE:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/addr2line.exe
+CMAKE_ADDR2LINE:FILEPATH=C:/mingw64/bin/addr2line.exe
 
 //Path to a program.
-CMAKE_AR:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/ar.exe
+CMAKE_AR:FILEPATH=C:/mingw64/bin/ar.exe
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
@@ -28,15 +28,15 @@ CMAKE_BUILD_TYPE:STRING=Debug
 CMAKE_COLOR_DIAGNOSTICS:BOOL=ON
 
 //CXX compiler
-CMAKE_CXX_COMPILER:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/g++.exe
+CMAKE_CXX_COMPILER:FILEPATH=C:/mingw64/bin/c++.exe
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
-CMAKE_CXX_COMPILER_AR:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/gcc-ar.exe
+CMAKE_CXX_COMPILER_AR:FILEPATH=C:/mingw64/bin/gcc-ar.exe
 
 //A wrapper around 'ranlib' adding the appropriate '--plugin' option
 // for the GCC compiler
-CMAKE_CXX_COMPILER_RANLIB:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/gcc-ranlib.exe
+CMAKE_CXX_COMPILER_RANLIB:FILEPATH=C:/mingw64/bin/gcc-ranlib.exe
 
 //Flags used by the CXX compiler during all build types.
 CMAKE_CXX_FLAGS:STRING=
@@ -57,7 +57,7 @@ CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 CMAKE_CXX_STANDARD_LIBRARIES:STRING=-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
 
 //Path to a program.
-CMAKE_DLLTOOL:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/dlltool.exe
+CMAKE_DLLTOOL:FILEPATH=C:/mingw64/bin/dlltool.exe
 
 //Flags used by the linker during all build types.
 CMAKE_EXE_LINKER_FLAGS:STRING=
@@ -87,10 +87,10 @@ CMAKE_GNUtoMS:BOOL=OFF
 CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/RayTracing
 
 //Path to a program.
-CMAKE_LINKER:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/ld.exe
+CMAKE_LINKER:FILEPATH=C:/mingw64/bin/ld.exe
 
 //make program
-CMAKE_MAKE_PROGRAM:FILEPATH=C:/PROGRA~1/JETBRA~1/CLION2~1.2/bin/ninja/win/x64/ninja.exe
+CMAKE_MAKE_PROGRAM:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe
 
 //Flags used by the linker during the creation of modules during
 // all build types.
@@ -113,13 +113,13 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
 //Path to a program.
-CMAKE_NM:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/nm.exe
+CMAKE_NM:FILEPATH=C:/mingw64/bin/nm.exe
 
 //Path to a program.
-CMAKE_OBJCOPY:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/objcopy.exe
+CMAKE_OBJCOPY:FILEPATH=C:/mingw64/bin/objcopy.exe
 
 //Path to a program.
-CMAKE_OBJDUMP:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/objdump.exe
+CMAKE_OBJDUMP:FILEPATH=C:/mingw64/bin/objdump.exe
 
 //Value Computed by CMake
 CMAKE_PROJECT_DESCRIPTION:STATIC=
@@ -146,10 +146,10 @@ CMAKE_PROJECT_VERSION_PATCH:STATIC=
 CMAKE_PROJECT_VERSION_TWEAK:STATIC=
 
 //Path to a program.
-CMAKE_RANLIB:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/ranlib.exe
+CMAKE_RANLIB:FILEPATH=C:/mingw64/bin/ranlib.exe
 
 //RC compiler
-CMAKE_RC_COMPILER:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/windres.exe
+CMAKE_RC_COMPILER:FILEPATH=C:/mingw64/bin/windres.exe
 
 //Flags for Windows Resource Compiler during all build types.
 CMAKE_RC_FLAGS:STRING=
@@ -167,7 +167,7 @@ CMAKE_RC_FLAGS_RELEASE:STRING=
 CMAKE_RC_FLAGS_RELWITHDEBINFO:STRING=
 
 //Path to a program.
-CMAKE_READELF:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/readelf.exe
+CMAKE_READELF:FILEPATH=C:/mingw64/bin/readelf.exe
 
 //Flags used by the linker during the creation of shared libraries
 // during all build types.
@@ -217,7 +217,7 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
 //Path to a program.
-CMAKE_STRIP:FILEPATH=C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/strip.exe
+CMAKE_STRIP:FILEPATH=C:/mingw64/bin/strip.exe
 
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
@@ -238,7 +238,16 @@ DOXYGEN_EXECUTABLE:FILEPATH=DOXYGEN_EXECUTABLE-NOTFOUND
 OpenMP_CXX_FLAGS:STRING=-fopenmp
 
 //CXX compiler libraries for OpenMP parallelization
-OpenMP_CXX_LIB_NAMES:STRING=
+OpenMP_CXX_LIB_NAMES:STRING=gomp;mingwthrd;pthread;mingwthrd
+
+//Path to the gomp library for OpenMP
+OpenMP_gomp_LIBRARY:FILEPATH=C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/libgomp.dll.a
+
+//Path to the mingwthrd library for OpenMP
+OpenMP_mingwthrd_LIBRARY:FILEPATH=C:/mingw64/x86_64-w64-mingw32/lib/libmingwthrd.a
+
+//Path to the pthread library for OpenMP
+OpenMP_pthread_LIBRARY:FILEPATH=C:/mingw64/x86_64-w64-mingw32/lib/libpthread.dll.a
 
 //Value Computed by CMake
 RayTracing_BINARY_DIR:STATIC=C:/Users/manue/Downloads/assignment_00 (2)/assignment_00/assignment_00/cmake-build-debug
@@ -397,7 +406,7 @@ DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
 //Details about finding OpenMP
 FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][c ][v4.5()]
 //Details about finding OpenMP_CXX
-FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-fopenmp][v4.5()]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-fopenmp][C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/libgomp.dll.a][C:/mingw64/x86_64-w64-mingw32/lib/libmingwthrd.a][C:/mingw64/x86_64-w64-mingw32/lib/libpthread.dll.a][C:/mingw64/x86_64-w64-mingw32/lib/libmingwthrd.a][v4.5()]
 //Result of TRY_COMPILE
 OpenMP_COMPILE_RESULT_CXX_fopenmp:INTERNAL=TRUE
 //ADVANCED property for variable: OpenMP_CXX_FLAGS
@@ -408,6 +417,12 @@ OpenMP_CXX_LIB_NAMES-ADVANCED:INTERNAL=1
 OpenMP_CXX_SPEC_DATE:INTERNAL=201511
 //Result of TRY_COMPILE
 OpenMP_SPECTEST_CXX_:INTERNAL=TRUE
+//ADVANCED property for variable: OpenMP_gomp_LIBRARY
+OpenMP_gomp_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_mingwthrd_LIBRARY
+OpenMP_mingwthrd_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_pthread_LIBRARY
+OpenMP_pthread_LIBRARY-ADVANCED:INTERNAL=1
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 

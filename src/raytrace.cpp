@@ -49,7 +49,7 @@ int main(int argc, char **argv)
             {"../scenes/cube/cube.sce",             "cube.tga"},
             {"../scenes/mask/mask.sce",             "mask.tga"},
             {"../scenes/mirror/mirror.sce",         "mirror.tga"},
-            {"../scenes/toon_faces/toon_faces.sce", "toon_faces.tga"},
+            {"../scenes/toon_faces/toon_faces.sce", "toon_faces_bounding_boxes.tga"},
             {"../scenes/office/office.sce",         "office.tga"},
             {"../scenes/rings/rings.sce",           "rings.tga"}
         } };

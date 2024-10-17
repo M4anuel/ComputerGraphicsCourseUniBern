@@ -23,9 +23,9 @@ foreach(TARGET common ${TARGETS})
 
     if(OpenMP_CXX_FOUND)
         target_link_libraries(${TARGET} PUBLIC OpenMP::OpenMP_CXX)
-    #     target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=1") #this line added
-    # else()
-    #     target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=0") #this line added
+        target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=1")
+    else()
+        target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=0")
     endif()
 endforeach()
 
