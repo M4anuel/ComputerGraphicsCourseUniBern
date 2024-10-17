@@ -21,14 +21,14 @@
 //== IMPLEMENTATION ===========================================================
 
 
-Mesh::Mesh(std::istream &is, const std::string &scenePath)
+Mesh::Mesh(std::istream& is, const std::string& scenePath)
 {
     std::string meshFile, mode;
     is >> meshFile;
 
     const char pathSep =
 #ifdef _WIN32
-                            '\\';
+        '\\';
 #else
                             '/';
 #endif
@@ -37,7 +37,7 @@ Mesh::Mesh(std::istream &is, const std::string &scenePath)
     read(scenePath.substr(0, scenePath.find_last_of(pathSep) + 1) + meshFile);
 
     is >> mode;
-    if      (mode ==  "FLAT") draw_mode_ = FLAT;
+    if (mode == "FLAT") draw_mode_ = FLAT;
     else if (mode == "PHONG") draw_mode_ = PHONG;
     else throw std::runtime_error("Invalid draw mode " + mode);
 
@@ -48,7 +48,7 @@ Mesh::Mesh(std::istream &is, const std::string &scenePath)
 //-----------------------------------------------------------------------------
 
 
-bool Mesh::read(const std::string &_filename)
+bool Mesh::read(const std::string& _filename)
 {
     // read a mesh in OFF format
 
@@ -79,7 +79,7 @@ bool Mesh::read(const std::string &_filename)
     Vertex v;
     vertices_.clear();
     vertices_.reserve(nV);
-    for (i=0; i<nV; ++i)
+    for (i = 0; i < nV; ++i)
     {
         ifs >> v.position;
         vertices_.push_back(v);
@@ -90,7 +90,7 @@ bool Mesh::read(const std::string &_filename)
     Triangle t;
     triangles_.clear();
     triangles_.reserve(nF);
-    for (i=0; i<nF; ++i)
+    for (i = 0; i < nF; ++i)
     {
         ifs >> dummy >> t.i0 >> t.i1 >> t.i2;
         triangles_.push_back(t);
@@ -120,15 +120,16 @@ bool Mesh::read(const std::string &_filename)
 // normals, and in our raytracer we'll use the incident angles as weights.)
 // \param[in] p0, p1, p2    triangle vertex positions
 // \param[out] w0, w1, w2    weights to be used for vertices 0, 1, and 2
-void angleWeights(const vec3 &p0, const vec3 &p1, const vec3 &p2,
-                  double &w0, double &w1, double &w2) {
+void angleWeights(const vec3& p0, const vec3& p1, const vec3& p2,
+                  double& w0, double& w1, double& w2)
+{
     // compute angle weights
-    const vec3 e01 = normalize(p1-p0);
-    const vec3 e12 = normalize(p2-p1);
-    const vec3 e20 = normalize(p0-p2);
-    w0 = acos( std::max(-1.0, std::min(1.0, dot(e01, -e20) )));
-    w1 = acos( std::max(-1.0, std::min(1.0, dot(e12, -e01) )));
-    w2 = acos( std::max(-1.0, std::min(1.0, dot(e20, -e12) )));
+    const vec3 e01 = normalize(p1 - p0);
+    const vec3 e12 = normalize(p2 - p1);
+    const vec3 e20 = normalize(p0 - p2);
+    w0 = acos(std::max(-1.0, std::min(1.0, dot(e01, -e20))));
+    w1 = acos(std::max(-1.0, std::min(1.0, dot(e12, -e01))));
+    w2 = acos(std::max(-1.0, std::min(1.0, dot(e20, -e12))));
 }
 
 
@@ -137,28 +138,28 @@ void angleWeights(const vec3 &p0, const vec3 &p1, const vec3 &p2,
 void Mesh::compute_normals()
 {
     // compute triangle normals
-    for (Triangle& t: triangles_)
+    for (Triangle& t : triangles_)
     {
         const vec3& p0 = vertices_[t.i0].position;
         const vec3& p1 = vertices_[t.i1].position;
         const vec3& p2 = vertices_[t.i2].position;
-        t.normal = normalize(cross(p1-p0, p2-p0));
+        t.normal = normalize(cross(p1 - p0, p2 - p0));
     }
 
     // initialize vertex normals to zero
-    for (Vertex& v: vertices_)
+    for (Vertex& v : vertices_)
     {
-        v.normal = vec3(0,0,0);
+        v.normal = vec3(0, 0, 0);
     }
-    for (Triangle& t: triangles_)
+    for (Triangle& t : triangles_)
     {
         double w0, w1, w2;
         angleWeights(vertices_[t.i0].position, vertices_[t.i1].position, vertices_[t.i2].position, w0, w1, w2);
-        vertices_[t.i0].normal += t.normal*w0;
-        vertices_[t.i1].normal += t.normal*w1;
-        vertices_[t.i2].normal += t.normal*w2;
+        vertices_[t.i0].normal += t.normal * w0;
+        vertices_[t.i1].normal += t.normal * w1;
+        vertices_[t.i2].normal += t.normal * w2;
     }
-    for (Vertex& v: vertices_)
+    for (Vertex& v : vertices_)
     {
         v.normal = normalize(v.normal);
     }
@@ -173,7 +174,7 @@ void Mesh::compute_bounding_box()
     bb_min_ = vec3(std::numeric_limits<double>::max());
     bb_max_ = vec3(std::numeric_limits<double>::lowest());
 
-    for (Vertex v: vertices_)
+    for (Vertex v : vertices_)
     {
         bb_min_ = min(bb_min_, v.position);
         bb_max_ = max(bb_max_, v.position);
@@ -186,16 +187,6 @@ void Mesh::compute_bounding_box()
 
 bool Mesh::intersect_bounding_box(const Ray& _ray) const
 {
-
-    /** \todo
-    * Intersect the ray `_ray` with the axis-aligned bounding box of the mesh.
-    * Note that the minimum and maximum point of the bounding box are stored
-    * in the member variables `bb_min_` and `bb_max_`. Return whether the ray
-    * intersects the bounding box.
-    * This function is ued in `Mesh::intersect()` to avoid the intersection test
-    * with all triangles of every mesh in the scene. The bounding boxes are computed
-    * in `Mesh::compute_bounding_box()`.
-    */
     // Initialize tmin and tmax to the interval of the ray
     double tmin = (bb_min_[0] - _ray.origin[0]) / _ray.direction[0];
     double tmax = (bb_max_[0] - _ray.origin[0]) / _ray.direction[0];
@@ -240,9 +231,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
 
 
 bool Mesh::intersect(const Ray& _ray,
-                     vec3&      _intersection_point,
-                     vec3&      _intersection_normal,
-                     double&    _intersection_t ) const
+                     vec3& _intersection_point,
+                     vec3& _intersection_normal,
+                     double& _intersection_t) const
 {
     // check bounding box intersection
     if (!intersect_bounding_box(_ray))
@@ -250,7 +241,7 @@ bool Mesh::intersect(const Ray& _ray,
         return false;
     }
 
-    vec3   p, n;
+    vec3 p, n;
     double t;
 
     _intersection_t = NO_INTERSECTION;
@@ -265,8 +256,8 @@ bool Mesh::intersect(const Ray& _ray,
             if (t < _intersection_t)
             {
                 // store data of this intersection
-                _intersection_t      = t;
-                _intersection_point  = p;
+                _intersection_t = t;
+                _intersection_point = p;
                 _intersection_normal = n;
             }
         }
@@ -285,19 +276,6 @@ bool Mesh::intersect_triangle(const Triangle& _triangle,
                               vec3& _intersection_normal,
                               double& _intersection_t) const
 {
-    /** \todo
-    * - intersect _ray with _triangle
-    * - store intersection point in `_intersection_point`
-    * - store ray parameter in `_intersection_t`
-    * - store normal at intersection point in `_intersection_normal`.
-    * - Depending on the member variable `draw_mode_`, use either the triangle
-    *  normal (`Triangle::normal`) or interpolate the vertex normals (`Vertex::normal`).
-    * - return `true` if there is an intersection with t > 0 (in front of the viewer)
-    *
-    * Hint: Rearrange `ray.origin + t*ray.dir = a*p0 + b*p1 + (1-a-b)*p2` to obtain a solvable
-    * system for a, b and t.
-    * Refer to [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) to easily solve it.
-     */
     const vec3& p0 = vertices_[_triangle.i0].position;
     const vec3& p1 = vertices_[_triangle.i1].position;
     const vec3& p2 = vertices_[_triangle.i2].position;
@@ -326,31 +304,28 @@ bool Mesh::intersect_triangle(const Triangle& _triangle,
 
     // Compute t to find the intersection point.
     double t = f * dot(q, edge2);
-    if (t > 1e-8) // Intersection is in front of the viewer.
+
+    if (t < 1e-8) return false; // Intersection is in front of the viewer.
+
+    _intersection_t = t;
+    _intersection_point = _ray.origin + _ray.direction * t;
+
+    if (draw_mode_ == FLAT)
     {
-        _intersection_t = t;
-        _intersection_point = _ray.origin + _ray.direction * t;
-
-        if (draw_mode_ == Draw_mode::FLAT)
-        {
-            // Use triangle normal
-            _intersection_normal = _triangle.normal;
-        }
-        else // DrawMode::PHONG
-        {
-            // Interpolate vertex normals
-            const vec3& n0 = vertices_[_triangle.i0].normal;
-            const vec3& n1 = vertices_[_triangle.i1].normal;
-            const vec3& n2 = vertices_[_triangle.i2].normal;
-            _intersection_normal = normalize((1 - beta - gamme) * n0 + beta * n1 + gamme * n2);
-        }
-
-        return true;
+        // Use triangle normal
+        _intersection_normal = _triangle.normal;
+    }
+    else // DrawMode::PHONG
+    {
+        // Interpolate vertex normals
+        const vec3& n0 = vertices_[_triangle.i0].normal;
+        const vec3& n1 = vertices_[_triangle.i1].normal;
+        const vec3& n2 = vertices_[_triangle.i2].normal;
+        _intersection_normal = normalize((1 - beta - gamme) * n0 + beta * n1 + gamme * n2);
     }
 
-    return false;
+    return true;
 }
-
 
 
 //=============================================================================
